@@ -1,20 +1,23 @@
 [
   {
-    "name": "Add BTC",
+    "name": "Add BTC to watchlist",
     "steps": [
       {
+        "send": { "callback": "add:BTC" },
         "expect": [
           {
             "method": "sendMessage",
-            "payload": {
-              "text": "Add Bitcoin to the watchlist"
-            }
+            "payload": { "text": "✅ Added BTC to your watchlist." }
           }
-        ],
-        "send": {
-          "callback": "add:BTC"
-        }
+        ]
       }
+    ]
+  },
+  {
+    "name": "Add BTC again shows already-in-watchlist",
+    "steps": [
+      { "send": { "callback": "add:BTC" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "add:BTC" }, "expect": [{ "method": "sendMessage", "payload": { "text": "BTC is already in your watchlist." } }] }
     ]
   }
 ]

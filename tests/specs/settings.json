@@ -1,19 +1,15 @@
 [
   {
-    "name": "Settings",
+    "name": "Settings shows current config",
     "steps": [
       {
+        "send": { "callback": "settings" },
         "expect": [
           {
             "method": "sendMessage",
-            "payload": {
-              "text": "View current settings"
-            }
+            "payload": { "text": "⚙️ Your settings:\n\n📋 Watchlist: empty\n⏰ Summary: 08:00\n🌙 Quiet hours: 22:00–08:00\n⏱ Cooldown: 30 min\n🔔 Alerts: 0 set" }
           }
-        ],
-        "send": {
-          "callback": "settings"
-        }
+        ]
       }
     ]
   }

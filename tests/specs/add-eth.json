@@ -1,20 +1,23 @@
 [
   {
-    "name": "Add ETH",
+    "name": "Add ETH to watchlist",
     "steps": [
       {
+        "send": { "callback": "add:ETH" },
         "expect": [
           {
             "method": "sendMessage",
-            "payload": {
-              "text": "Add Ethereum to the watchlist"
-            }
+            "payload": { "text": "✅ Added ETH to your watchlist." }
           }
-        ],
-        "send": {
-          "callback": "add:ETH"
-        }
+        ]
       }
+    ]
+  },
+  {
+    "name": "Add ETH again shows already-in-watchlist",
+    "steps": [
+      { "send": { "callback": "add:ETH" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "add:ETH" }, "expect": [{ "method": "sendMessage", "payload": { "text": "ETH is already in your watchlist." } }] }
     ]
   }
 ]

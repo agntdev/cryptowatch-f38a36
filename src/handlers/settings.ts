@@ -1,17 +1,31 @@
 import { Composer } from "grammy";
+import type { Ctx } from "../bot.js";
+import { resolveUserStore } from "../lib/store.js";
+import { inlineButton, inlineKeyboard } from "../toolkit/index.js";
 
-// SCAFFOLD — generated from the bot blueprint BEFORE the agent runs.
-// Keep a LIVE registration (.command / .callbackQuery / …) so this feature is
-// never an empty stub. Replace the reply body with real logic + copy; if you
-// change the user-facing text, update tests/specs to match EXACTLY.
-// Do NOT rewrite src/bot.ts — buildBot() already auto-loads this module.
-// Menu: wire this into /start via registerMainMenuItem({ label: "Settings", data: "settings" }) if the toolkit exposes it.
+const store = resolveUserStore();
 
-const composer = new Composer();
+const composer = new Composer<Ctx>();
 
 composer.callbackQuery("settings", async (ctx) => {
   await ctx.answerCallbackQuery();
-  await ctx.reply("View current settings");
+  const userId = String(ctx.from!.id);
+  const data = await store.getUser(userId);
+  const watchlistStr = data.watchlist.length > 0 ? data.watchlist.join(", ") : "empty";
+  const alertCount = data.alerts.length;
+  const text =
+    `⚙️ Your settings:\n\n` +
+    `📋 Watchlist: ${watchlistStr}\n` +
+    `⏰ Summary: ${data.summaryTime}\n` +
+    `🌙 Quiet hours: ${data.quietHoursStart}–${data.quietHoursEnd}\n` +
+    `⏱ Cooldown: ${data.cooldownDuration} min\n` +
+    `🔔 Alerts: ${alertCount} set`;
+  const kb = inlineKeyboard([
+    [inlineButton("⏰ Summary time", "summary:settings"), inlineButton("🌙 Quiet hours", "quiet:settings")],
+    [inlineButton("⏱ Cooldown", "cooldown:settings"), inlineButton("🔔 Alerts", "alert:list")],
+    [inlineButton("⬅️ Back to menu", "menu:main")],
+  ]);
+  await ctx.reply(text, { reply_markup: kb });
 });
 
 export default composer;

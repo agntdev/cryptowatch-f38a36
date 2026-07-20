@@ -1,20 +1,23 @@
 [
   {
-    "name": "Add custom coin",
+    "name": "Add custom coin prompts for ticker",
     "steps": [
       {
+        "send": { "callback": "add:custom" },
         "expect": [
           {
             "method": "sendMessage",
-            "payload": {
-              "text": "Add a custom coin to the watchlist"
-            }
+            "payload": { "text": "Enter the coin ticker (e.g. SOL, DOGE, ADA):" }
           }
-        ],
-        "send": {
-          "callback": "add:custom"
-        }
+        ]
       }
+    ]
+  },
+  {
+    "name": "Add custom coin with invalid ticker shows error",
+    "steps": [
+      { "send": { "callback": "add:custom" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "text": "XYZINVALID123" }, "expect": [{ "method": "sendMessage", "payload": { "text": "Couldn't find a coin with ticker \"XYZINVALID123\". Check the spelling and try again." } }] }
     ]
   }
 ]

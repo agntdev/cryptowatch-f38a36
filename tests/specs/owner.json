@@ -1,0 +1,8 @@
+[
+  {
+    "name": "Owner view shows dashboard",
+    "steps": [
+      { "send": { "text": "/owner" }, "expect": [{ "method": "sendMessage", "payload": { "text": "👑 Owner dashboard\n\nTotal users: 1\nTop alerts: none" } }] }
+    ]
+  }
+]

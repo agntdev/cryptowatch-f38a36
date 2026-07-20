@@ -1,0 +1,16 @@
+[
+  {
+    "name": "Set summary time",
+    "steps": [
+      { "send": { "callback": "summary:settings" }, "expect": [{ "method": "sendMessage", "payload": { "text": "Enter the summary time (HH:MM, e.g. 08:00):" } }] },
+      { "send": { "text": "09:30" }, "expect": [{ "method": "sendMessage", "payload": { "text": "✅ Morning summary set for 09:30." } }] }
+    ]
+  },
+  {
+    "name": "Invalid summary time shows error",
+    "steps": [
+      { "send": { "callback": "summary:settings" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "text": "abc" }, "expect": [{ "method": "sendMessage", "payload": { "text": "Enter a valid time in HH:MM format (e.g. 08:00):" } }] }
+    ]
+  }
+]
