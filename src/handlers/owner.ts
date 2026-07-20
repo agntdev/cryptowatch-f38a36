@@ -15,7 +15,8 @@ composer.command("owner", async (ctx) => {
   }
   const store = resolveUserStore();
   const allIds = await store.getAllUserIds();
-  const totalUsers = allIds.length;
+  const ownerId = String(ctx.from!.id);
+  const totalUsers = allIds.includes(ownerId) ? allIds.length : allIds.length + 1;
   let alertLines: string[] = [];
   for (const uid of allIds.slice(0, 50)) {
     const data = await store.getUser(uid);
