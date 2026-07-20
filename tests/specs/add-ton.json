@@ -1,20 +1,23 @@
 [
   {
-    "name": "Add TON",
+    "name": "Add TON to watchlist",
     "steps": [
       {
+        "send": { "callback": "add:TON" },
         "expect": [
           {
             "method": "sendMessage",
-            "payload": {
-              "text": "Add TON to the watchlist"
-            }
+            "payload": { "text": "✅ Added TON to your watchlist." }
           }
-        ],
-        "send": {
-          "callback": "add:TON"
-        }
+        ]
       }
+    ]
+  },
+  {
+    "name": "Add TON again shows already-in-watchlist",
+    "steps": [
+      { "send": { "callback": "add:TON" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "add:TON" }, "expect": [{ "method": "sendMessage", "payload": { "text": "TON is already in your watchlist." } }] }
     ]
   }
 ]

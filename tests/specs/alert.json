@@ -1,0 +1,27 @@
+[
+  {
+    "name": "Set price threshold alert",
+    "steps": [
+      { "send": { "callback": "add:BTC" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "alert:show" }, "expect": [{ "method": "sendMessage", "payload": { "text": "Which coin do you want to set an alert for?" } }] },
+      { "send": { "callback": "alert:pick:BTC" }, "expect": [{ "method": "sendMessage", "payload": { "text": "Enter the price threshold for BTC (e.g. 50000):" } }] },
+      { "send": { "text": "50000" }, "expect": [{ "method": "sendMessage", "payload": { "text": "✅ Alert set: notify when BTC reaches $50,000." } }] }
+    ]
+  },
+  {
+    "name": "Set percentage move alert",
+    "steps": [
+      { "send": { "callback": "add:ETH" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "alert:show" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "alert:pick:ETH" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "alert:percent:ETH" }, "expect": [{ "method": "sendMessage", "payload": { "text": "Enter the percent change threshold for ETH (e.g. 5 for 5%):" } }] },
+      { "send": { "text": "5" }, "expect": [{ "method": "sendMessage", "payload": { "text": "✅ Alert set: notify when ETH changes 5%." } }] }
+    ]
+  },
+  {
+    "name": "Alert on empty watchlist",
+    "steps": [
+      { "send": { "callback": "alert:show" }, "expect": [{ "method": "sendMessage", "payload": { "text": "Your watchlist is empty — add a coin first." } }] }
+    ]
+  }
+]

@@ -1,17 +1,27 @@
 import { Composer } from "grammy";
+import type { Ctx } from "../bot.js";
+import { resolveUserStore } from "../lib/store.js";
+import { inlineButton, inlineKeyboard } from "../toolkit/index.js";
 
-// SCAFFOLD — generated from the bot blueprint BEFORE the agent runs.
-// Keep a LIVE registration (.command / .callbackQuery / …) so this feature is
-// never an empty stub. Replace the reply body with real logic + copy; if you
-// change the user-facing text, update tests/specs to match EXACTLY.
-// Do NOT rewrite src/bot.ts — buildBot() already auto-loads this module.
-// Menu: wire this into /start via registerMainMenuItem({ label: "Add BTC", data: "add:BTC" }) if the toolkit exposes it.
+const store = resolveUserStore();
 
-const composer = new Composer();
+const composer = new Composer<Ctx>();
 
 composer.callbackQuery("add:BTC", async (ctx) => {
   await ctx.answerCallbackQuery();
-  await ctx.reply("Add Bitcoin to the watchlist");
+  const userId = String(ctx.from!.id);
+  const data = await store.getUser(userId);
+  if (data.watchlist.includes("BTC")) {
+    await ctx.reply("BTC is already in your watchlist.", {
+      reply_markup: inlineKeyboard([[inlineButton("⬅️ Back to menu", "menu:main")]]),
+    });
+    return;
+  }
+  data.watchlist.push("BTC");
+  await store.setUser(userId, data);
+  await ctx.reply("✅ Added BTC to your watchlist.", {
+    reply_markup: inlineKeyboard([[inlineButton("⬅️ Back to menu", "menu:main")]]),
+  });
 });
 
 export default composer;

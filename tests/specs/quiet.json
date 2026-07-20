@@ -1,0 +1,17 @@
+[
+  {
+    "name": "Set quiet hours",
+    "steps": [
+      { "send": { "callback": "quiet:settings" }, "expect": [{ "method": "sendMessage", "payload": { "text": "Enter quiet hours start (HH:MM, e.g. 22:00):" } }] },
+      { "send": { "text": "23:00" }, "expect": [{ "method": "sendMessage", "payload": { "text": "Enter quiet hours end (HH:MM, e.g. 08:00):" } }] },
+      { "send": { "text": "07:00" }, "expect": [{ "method": "sendMessage", "payload": { "text": "✅ Quiet hours set: 23:00–07:00." } }] }
+    ]
+  },
+  {
+    "name": "Invalid quiet hours time shows error",
+    "steps": [
+      { "send": { "callback": "quiet:settings" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "text": "abc" }, "expect": [{ "method": "sendMessage", "payload": { "text": "Enter a valid time in HH:MM format (e.g. 22:00):" } }] }
+    ]
+  }
+]

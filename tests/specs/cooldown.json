@@ -1,0 +1,16 @@
+[
+  {
+    "name": "Set cooldown duration",
+    "steps": [
+      { "send": { "callback": "cooldown:settings" }, "expect": [{ "method": "sendMessage", "payload": { "text": "Enter cooldown duration in minutes (e.g. 30):" } }] },
+      { "send": { "text": "45" }, "expect": [{ "method": "sendMessage", "payload": { "text": "✅ Cooldown set to 45 minutes." } }] }
+    ]
+  },
+  {
+    "name": "Invalid cooldown shows error",
+    "steps": [
+      { "send": { "callback": "cooldown:settings" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "text": "abc" }, "expect": [{ "method": "sendMessage", "payload": { "text": "Enter a number of minutes (1–1440, e.g. 30):" } }] }
+    ]
+  }
+]

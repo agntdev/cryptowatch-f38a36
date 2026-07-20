@@ -1,17 +1,43 @@
 import { Composer } from "grammy";
+import type { Ctx } from "../bot.js";
+import { resolveUserStore } from "../lib/store.js";
+import { fetchPrices } from "../lib/coingecko.js";
+import { inlineButton, inlineKeyboard } from "../toolkit/index.js";
 
-// SCAFFOLD — generated from the bot blueprint BEFORE the agent runs.
-// Keep a LIVE registration (.command / .callbackQuery / …) so this feature is
-// never an empty stub. Replace the reply body with real logic + copy; if you
-// change the user-facing text, update tests/specs to match EXACTLY.
-// Do NOT rewrite src/bot.ts — buildBot() already auto-loads this module.
-// Menu: wire this into /start via registerMainMenuItem({ label: "Check price", data: "price:all" }) if the toolkit exposes it.
+const store = resolveUserStore();
 
-const composer = new Composer();
+const composer = new Composer<Ctx>();
 
 composer.callbackQuery("price:all", async (ctx) => {
   await ctx.answerCallbackQuery();
-  await ctx.reply("Check prices for all coins in the watchlist");
+  const userId = String(ctx.from!.id);
+  const data = await store.getUser(userId);
+  if (data.watchlist.length === 0) {
+    await ctx.reply("Your watchlist is empty — tap Add to get started.", {
+      reply_markup: inlineKeyboard([[inlineButton("⬅️ Back to menu", "menu:main")]]),
+    });
+    return;
+  }
+  try {
+    const prices = await fetchPrices(data.watchlist);
+    if (prices.length === 0) {
+      await ctx.reply("Couldn't fetch prices right now. Try again in a moment.", {
+        reply_markup: inlineKeyboard([[inlineButton("⬅️ Back to menu", "menu:main")]]),
+      });
+      return;
+    }
+    const lines = prices.map((p) => {
+      const sign = p.change24h >= 0 ? "+" : "";
+      return `${p.ticker}: $${p.price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (${sign}${p.change24h.toFixed(1)}%)`;
+    });
+    await ctx.reply(`📊 Prices:\n\n${lines.join("\n")}`, {
+      reply_markup: inlineKeyboard([[inlineButton("⬅️ Back to menu", "menu:main")]]),
+    });
+  } catch {
+    await ctx.reply("Couldn't fetch prices right now. Try again in a moment.", {
+      reply_markup: inlineKeyboard([[inlineButton("⬅️ Back to menu", "menu:main")]]),
+    });
+  }
 });
 
 export default composer;

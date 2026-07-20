@@ -1,0 +1,16 @@
+[
+  {
+    "name": "Remove coin from watchlist",
+    "steps": [
+      { "send": { "callback": "add:BTC" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "remove:show" }, "expect": [{ "method": "sendMessage", "payload": { "text": "Tap a coin to remove it from your watchlist:" } }] },
+      { "send": { "callback": "remove:BTC" }, "expect": [{ "method": "sendMessage", "payload": { "text": "✅ Removed BTC from your watchlist." } }] }
+    ]
+  },
+  {
+    "name": "Remove from empty watchlist",
+    "steps": [
+      { "send": { "callback": "remove:show" }, "expect": [{ "method": "sendMessage", "payload": { "text": "Your watchlist is empty — nothing to remove." } }] }
+    ]
+  }
+]
