@@ -3,12 +3,11 @@ import type { Ctx } from "../bot.js";
 import { resolveUserStore } from "../lib/store.js";
 import { inlineButton, inlineKeyboard } from "../toolkit/index.js";
 
-const store = resolveUserStore();
-
 const composer = new Composer<Ctx>();
 
 composer.callbackQuery("remove:show", async (ctx) => {
   await ctx.answerCallbackQuery();
+  const store = resolveUserStore();
   const userId = String(ctx.from!.id);
   const data = await store.getUser(userId);
   if (data.watchlist.length === 0) {
@@ -29,6 +28,7 @@ composer.callbackQuery("remove:show", async (ctx) => {
 composer.callbackQuery(/^remove:([A-Za-z0-9]+)$/, async (ctx) => {
   await ctx.answerCallbackQuery();
   const ticker = ctx.match![1]!.toUpperCase();
+  const store = resolveUserStore();
   const userId = String(ctx.from!.id);
   const data = await store.getUser(userId);
   data.watchlist = data.watchlist.filter((t) => t !== ticker);

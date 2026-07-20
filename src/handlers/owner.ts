@@ -3,7 +3,6 @@ import type { Ctx } from "../bot.js";
 import { resolveUserStore } from "../lib/store.js";
 import { inlineButton, inlineKeyboard } from "../toolkit/index.js";
 
-const store = resolveUserStore();
 const OWNER_IDS = (process.env.OWNER_IDS ?? "").split(",").filter(Boolean);
 
 const composer = new Composer<Ctx>();
@@ -14,6 +13,7 @@ composer.command("owner", async (ctx) => {
     await ctx.reply("This command is for the bot owner only.");
     return;
   }
+  const store = resolveUserStore();
   const allIds = await store.getAllUserIds();
   const totalUsers = allIds.length;
   let alertLines: string[] = [];

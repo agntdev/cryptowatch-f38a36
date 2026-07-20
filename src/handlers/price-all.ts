@@ -4,12 +4,11 @@ import { resolveUserStore } from "../lib/store.js";
 import { fetchPrices } from "../lib/coingecko.js";
 import { inlineButton, inlineKeyboard } from "../toolkit/index.js";
 
-const store = resolveUserStore();
-
 const composer = new Composer<Ctx>();
 
 composer.callbackQuery("price:all", async (ctx) => {
   await ctx.answerCallbackQuery();
+  const store = resolveUserStore();
   const userId = String(ctx.from!.id);
   const data = await store.getUser(userId);
   if (data.watchlist.length === 0) {
