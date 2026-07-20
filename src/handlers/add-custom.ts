@@ -1,10 +1,6 @@
 import { Composer } from "grammy";
 import type { Ctx } from "../bot.js";
-import { resolveUserStore } from "../lib/store.js";
-import { validateTicker } from "../lib/coingecko.js";
 import { inlineButton, inlineKeyboard } from "../toolkit/index.js";
-
-const store = resolveUserStore();
 
 const composer = new Composer<Ctx>();
 

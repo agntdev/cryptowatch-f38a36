@@ -4,8 +4,6 @@ import { resolveUserStore } from "../lib/store.js";
 import { validateTicker } from "../lib/coingecko.js";
 import { inlineButton, inlineKeyboard } from "../toolkit/index.js";
 
-const store = resolveUserStore();
-
 const composer = new Composer<Ctx>();
 
 function isValidHHMM(s: string): boolean {
@@ -20,6 +18,7 @@ composer.on("message:text", async (ctx, next) => {
   }
   const text = ctx.message.text.trim();
   const userId = String(ctx.from!.id);
+  const store = resolveUserStore();
   const kb = inlineKeyboard([[inlineButton("⬅️ Back to menu", "menu:main")]]);
 
   if (step === "awaiting_custom_ticker") {

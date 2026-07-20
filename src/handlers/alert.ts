@@ -3,12 +3,11 @@ import type { Ctx } from "../bot.js";
 import { resolveUserStore } from "../lib/store.js";
 import { inlineButton, inlineKeyboard } from "../toolkit/index.js";
 
-const store = resolveUserStore();
-
 const composer = new Composer<Ctx>();
 
 composer.callbackQuery("alert:show", async (ctx) => {
   await ctx.answerCallbackQuery();
+  const store = resolveUserStore();
   const userId = String(ctx.from!.id);
   const data = await store.getUser(userId);
   if (data.watchlist.length === 0) {
@@ -50,6 +49,7 @@ composer.callbackQuery(/^alert:percent:([A-Za-z0-9]+)$/, async (ctx) => {
 
 composer.callbackQuery("alert:list", async (ctx) => {
   await ctx.answerCallbackQuery();
+  const store = resolveUserStore();
   const userId = String(ctx.from!.id);
   const data = await store.getUser(userId);
   if (data.alerts.length === 0) {
