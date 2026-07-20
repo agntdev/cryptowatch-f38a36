@@ -47,16 +47,17 @@ class RedisUserStore implements UserStore {
 
   async getUser(userId: string): Promise<UserData> {
     const raw = await this.client.get(this.prefix + userId);
-    if (!raw) return { ...DEFAULT_USER_DATA };
+    if (!raw) return { ...DEFAULT_USER_DATA, watchlist: [], alerts: [] };
     try {
-      return { ...DEFAULT_USER_DATA, ...JSON.parse(raw) };
+      const parsed = JSON.parse(raw);
+      return { ...DEFAULT_USER_DATA, ...parsed, watchlist: [...(parsed.watchlist ?? [])], alerts: [...(parsed.alerts ?? [])] };
     } catch {
-      return { ...DEFAULT_USER_DATA };
+      return { ...DEFAULT_USER_DATA, watchlist: [], alerts: [] };
     }
   }
 
   async setUser(userId: string, data: UserData): Promise<void> {
-    await this.client.set(this.prefix + userId, JSON.stringify(data));
+    await this.client.set(this.prefix + userId, JSON.stringify({ ...data, watchlist: [...data.watchlist], alerts: [...data.alerts] }));
   }
 
   async getAllUserIds(): Promise<string[]> {
@@ -70,11 +71,14 @@ class MemoryUserStore implements UserStore {
 
   async getUser(userId: string): Promise<UserData> {
     const data = this.store.get(userId);
-    return data ? { ...data } : { ...DEFAULT_USER_DATA };
+    if (data) {
+      return { ...data, watchlist: [...data.watchlist], alerts: [...data.alerts] };
+    }
+    return { ...DEFAULT_USER_DATA, watchlist: [], alerts: [] };
   }
 
   async setUser(userId: string, data: UserData): Promise<void> {
-    this.store.set(userId, { ...data });
+    this.store.set(userId, { ...data, watchlist: [...data.watchlist], alerts: [...data.alerts] });
   }
 
   async getAllUserIds(): Promise<string[]> {

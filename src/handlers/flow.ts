@@ -25,8 +25,8 @@ composer.on("message:text", async (ctx, next) => {
     ctx.session.step = undefined;
     ctx.session.temp = undefined;
     const ticker = text.toUpperCase().replace(/[^A-Z0-9]/g, "");
-    if (ticker.length < 2 || ticker.length > 10) {
-      await ctx.reply("Enter a valid ticker (2–10 letters, e.g. SOL):", { reply_markup: kb });
+    if (ticker.length < 2) {
+      await ctx.reply("Enter a valid ticker (2+ letters, e.g. SOL):", { reply_markup: kb });
       return;
     }
     const data = await store.getUser(userId);
